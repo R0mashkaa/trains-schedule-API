@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id              String               @id @default(uuid())
+  firstName       String               @map("first_name")
+  lastName        String               @map("last_name")
+  role            UsersRoleEnum        @default(USER)
+  email           String
+  password        String
+  favorite_routes UserFavoriteRoutes[]
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
+}
+
+enum UsersRoleEnum {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+model UserFavoriteRoutes {
+  userId  String @map("user_id")
+  routeId String @map("route_id")
+
+  user  users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  route routes @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, routeId])
+  @@map("user_favorite_routes")
+}
+
+model routes {
+  id        String           @id @default(uuid())
+  departure DateTime
+  arrive    DateTime
+  stations  routesStations[]
+  trainId   String?          @map("train_id")
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+
+  Train       trains?              @relation(fields: [trainId], references: [id], onDelete: SetNull)
+  favoritedBy UserFavoriteRoutes[]
+}
+
+model routesStations {
+  id        String   @id @default(uuid())
+  routeId   String   @map("route_id")
+  stationId String   @map("station_id")
+  departure DateTime
+  arrive    DateTime
+  track     String
+
+  Route   routes   @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  Station stations @relation(fields: [stationId], references: [id], onDelete: Cascade)
+
+  @@map("routes_stations")
+}
+
+model stations {
+  id        String   @id @default(uuid())
+  name      String
+  city      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  Routes routesStations[]
+}
+
+model trains {
+  id        String   @id @default(uuid())
+  name      String
+  number    String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  route     routes[]
+}
