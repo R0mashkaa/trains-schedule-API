@@ -13,11 +13,43 @@ export class TrainsRepository {
     });
   }
 
-  async findAll(query?: Prisma.trainsFindManyArgs): Promise<trains[]> {
+  async findAll(from: string, to: string, date: Date): Promise<trains[]> {
     return this.prisma.trains.findMany({
-      ...query,
+      where: {
+        routeId: {
+          not: null,
+        },
+        Route: {
+          departure: {
+            gte: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0),
+            // lt: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1, 0, 0, 0),
+          },
+          stations: {
+            some: {
+              Station: {
+                city: {
+                  contains: from,
+                  mode: 'insensitive',
+                },
+              },
+            },
+          },
+          AND: {
+            stations: {
+              some: {
+                Station: {
+                  city: {
+                    contains: to,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
       include: {
-        route: {
+        Route: {
           include: {
             stations: {
               include: {
@@ -34,7 +66,7 @@ export class TrainsRepository {
     return this.prisma.trains.findFirst({
       ...query,
       include: {
-        route: true,
+        Route: true,
       },
     });
   }

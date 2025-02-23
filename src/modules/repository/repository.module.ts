@@ -8,8 +8,9 @@ import {
   RoutesStationsRepository,
   StationsRepository,
   TrainsRepository,
+  UserFavoriteRouteRepository,
   UsersRepository,
-} from './repositories';
+} from "./repositories";
 
 const providers = [
   ConfigService,
@@ -19,6 +20,7 @@ const providers = [
   StationsRepository,
   RoutesStationsRepository,
   TrainsRepository,
+  UserFavoriteRouteRepository,
 ];
 
 @Global()

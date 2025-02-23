@@ -14,11 +14,21 @@ export class UsersRepository {
   }
 
   async findAll(query?: Prisma.usersFindManyArgs): Promise<users[]> {
-    return this.prisma.users.findMany(query);
+    return this.prisma.users.findMany({
+      ...query,
+      include: {
+        favorite_routes: true,
+      },
+    });
   }
 
   async findOne(query: Prisma.usersFindManyArgs): Promise<users> {
-    return this.prisma.users.findFirst(query);
+    return this.prisma.users.findFirst({
+      ...query,
+      include: {
+        favorite_routes: true,
+      },
+    });
   }
 
   async update(id: string, data: Partial<users>): Promise<users> {

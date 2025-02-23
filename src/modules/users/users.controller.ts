@@ -24,6 +24,17 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
+  @Get('myProfile')
+  @ApiOperation({
+    summary: '[GetUserProfile]',
+    description: 'Get user by token',
+  })
+  @ApiResponse({ type: UsersResponse })
+  @HttpCode(HttpStatus.OK)
+  async getMyProfile(@GetUser() user: ApiJwtPayload): Promise<UsersResponse> {
+    return await this.usersService.findById(user.id);
+  }
+
   @Get(':id')
   @Roles(UsersRoleEnum.ADMIN, UsersRoleEnum.SUPER_ADMIN)
   @ApiOperation({

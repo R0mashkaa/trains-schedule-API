@@ -17,9 +17,10 @@ export class TrainsService {
   }
 
   @LoggerServiceDecorator()
-  async findAll(): Promise<TrainsResponse[]> {
+  async findAll(from: string, to: string, date: string): Promise<TrainsResponse[]> {
     try {
-      return await this.trainsRepository.findAll();
+      return await this.trainsRepository.findAll(from, to, new Date(date) );
+      // return await this.trainsRepository.findAll('Kyiv', 'Lviv', new Date("2025-02-22T00:00:00.000Z"));
     } catch (error) {
       await errorHandler('findAll', 'Trains', error);
     }

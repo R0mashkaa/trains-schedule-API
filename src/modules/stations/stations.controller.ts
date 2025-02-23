@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoggerApi, Roles } from '@app/common';
+import { LoggerApi, Roles, Public} from '@app/common';
 import { UsersRoleEnum } from '@prisma/client';
 import { UpdateStationDto, StationsResponse, CreateStationDto } from './dto';
 import { StationsService } from './stations.service';
@@ -24,8 +24,8 @@ export class StationsController {
     return await this.stationsService.create(data);
   }
 
+  @Public()
   @Get()
-  @Roles(UsersRoleEnum.ADMIN, UsersRoleEnum.SUPER_ADMIN)
   @ApiOperation({
     summary: '[GetAllStations]',
     description: 'Get all stations',

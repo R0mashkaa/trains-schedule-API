@@ -16,11 +16,12 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "user_favorite_routes" (
+CREATE TABLE "user_favorite_trains" (
+    "id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
-    "route_id" TEXT NOT NULL,
+    "train_id" TEXT NOT NULL,
 
-    CONSTRAINT "user_favorite_routes_pkey" PRIMARY KEY ("user_id","route_id")
+    CONSTRAINT "user_favorite_trains_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -63,6 +64,7 @@ CREATE TABLE "trains" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "number" TEXT NOT NULL,
+    "route_id" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -70,19 +72,25 @@ CREATE TABLE "trains" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "routes_train_id_key" ON "routes"("train_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "trains_number_key" ON "trains"("number");
 
--- AddForeignKey
-ALTER TABLE "user_favorite_routes" ADD CONSTRAINT "user_favorite_routes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX "trains_route_id_key" ON "trains"("route_id");
 
 -- AddForeignKey
-ALTER TABLE "user_favorite_routes" ADD CONSTRAINT "user_favorite_routes_route_id_fkey" FOREIGN KEY ("route_id") REFERENCES "routes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "user_favorite_trains" ADD CONSTRAINT "user_favorite_trains_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "routes" ADD CONSTRAINT "routes_train_id_fkey" FOREIGN KEY ("train_id") REFERENCES "trains"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "user_favorite_trains" ADD CONSTRAINT "user_favorite_trains_train_id_fkey" FOREIGN KEY ("train_id") REFERENCES "trains"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "routes_stations" ADD CONSTRAINT "routes_stations_route_id_fkey" FOREIGN KEY ("route_id") REFERENCES "routes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "routes_stations" ADD CONSTRAINT "routes_stations_station_id_fkey" FOREIGN KEY ("station_id") REFERENCES "stations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "trains" ADD CONSTRAINT "trains_route_id_fkey" FOREIGN KEY ("route_id") REFERENCES "routes"("id") ON DELETE SET NULL ON UPDATE CASCADE;

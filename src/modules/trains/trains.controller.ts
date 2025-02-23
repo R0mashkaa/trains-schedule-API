@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoggerApi, Roles } from '@app/common';
+import { LoggerApi, Roles, Public} from '@app/common';
 import { UsersRoleEnum } from '@prisma/client';
 import { UpdateTrainDto, TrainsResponse, CreateTrainDto } from './dto';
 import { TrainsService } from './trains.service';
@@ -24,6 +24,8 @@ export class TrainsController {
     return await this.trainsService.create(data);
   }
 
+
+  @Public()
   @Get()
   @ApiOperation({
     summary: '[GetAllTrains]',
@@ -31,10 +33,15 @@ export class TrainsController {
   })
   @ApiResponse({ type: TrainsResponse, isArray: true })
   @HttpCode(HttpStatus.OK)
-  async getAll(): Promise<TrainsResponse[]> {
-    return await this.trainsService.findAll();
+  async getAll(
+    @Query('date') date: string,
+    @Query('from') from: string,
+    @Query('to') to: string,
+  ): Promise<TrainsResponse[]> {
+    return await this.trainsService.findAll(from, to, date);
   }
 
+  @Public()
   @Get(':id')
   @ApiOperation({
     summary: '[GetTrainById]',

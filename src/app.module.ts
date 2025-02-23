@@ -14,6 +14,7 @@ import {
   RoutesStationsModule,
   TrainsModule,
 } from '@app/modules';
+import { UserFavoriteTrainsModule } from "src/modules/user-favoriteTrain";
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import {
     StationsModule,
     RoutesStationsModule,
     TrainsModule,
+    UserFavoriteTrainsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtGuard },

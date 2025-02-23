@@ -14,7 +14,7 @@ model users {
   role            UsersRoleEnum        @default(USER)
   email           String
   password        String
-  favorite_routes UserFavoriteRoutes[]
+  favorite_routes userFavoriteTrains[]
   createdAt       DateTime             @default(now()) @map("created_at")
   updatedAt       DateTime             @updatedAt @map("updated_at")
 }
@@ -25,15 +25,15 @@ enum UsersRoleEnum {
   SUPER_ADMIN
 }
 
-model UserFavoriteRoutes {
+model userFavoriteTrains {
+  id      String @id @default(uuid())
   userId  String @map("user_id")
-  routeId String @map("route_id")
+  trainId String @map("train_id")
 
-  user  users  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  route routes @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  User  users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Train trains @relation(fields: [trainId], references: [id], onDelete: Cascade)
 
-  @@id([userId, routeId])
-  @@map("user_favorite_routes")
+  @@map("user_favorite_trains")
 }
 
 model routes {
@@ -41,12 +41,11 @@ model routes {
   departure DateTime
   arrive    DateTime
   stations  routesStations[]
-  trainId   String?          @map("train_id")
+  trainId   String?          @unique @map("train_id")
   createdAt DateTime         @default(now()) @map("created_at")
   updatedAt DateTime         @updatedAt @map("updated_at")
 
-  Train       trains?              @relation(fields: [trainId], references: [id], onDelete: SetNull)
-  favoritedBy UserFavoriteRoutes[]
+  trains trains?
 }
 
 model routesStations {
@@ -77,7 +76,10 @@ model trains {
   id        String   @id @default(uuid())
   name      String
   number    String   @unique
+  routeId   String?  @unique @map("route_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  route     routes[]
+
+  favoritedBy userFavoriteTrains[]
+  Route       routes?              @relation(fields: [routeId], references: [id])
 }
