@@ -5,3 +5,5 @@ export * from './routes';
 export * from './stations';
 export * from './routes-stations';
 export * from './trains';
+export * from './user-favoriteTrain';
+export * from './task-schedule';

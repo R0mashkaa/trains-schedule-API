@@ -10,7 +10,7 @@ import {
   TrainsRepository,
   UserFavoriteRouteRepository,
   UsersRepository,
-} from "./repositories";
+} from './repositories';
 
 const providers = [
   ConfigService,

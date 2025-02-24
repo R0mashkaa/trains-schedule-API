@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiJwtPayload, GetUser, LoggerApi } from '@app/common';
 import { UserFavoriteRouteResponse, CreateUserFavoriteDto } from './dto';
@@ -18,7 +18,10 @@ export class UserFavoriteTrainController {
   })
   @ApiResponse({ type: UserFavoriteRouteResponse })
   @HttpCode(HttpStatus.OK)
-  async create(@GetUser() user: ApiJwtPayload, @Body() data: CreateUserFavoriteDto): Promise<UserFavoriteRouteResponse> {
+  async create(
+    @GetUser() user: ApiJwtPayload,
+    @Body() data: CreateUserFavoriteDto,
+  ): Promise<UserFavoriteRouteResponse> {
     return await this.userFavoriteTrainsService.create(user.id, data);
   }
 
@@ -29,9 +32,7 @@ export class UserFavoriteTrainController {
   })
   @ApiResponse({ type: UserFavoriteRouteResponse, isArray: true })
   @HttpCode(HttpStatus.OK)
-  async getAll(
-    @GetUser() user: ApiJwtPayload,
-  ): Promise<UserFavoriteRouteResponse[]> {
+  async getAll(@GetUser() user: ApiJwtPayload): Promise<UserFavoriteRouteResponse[]> {
     return await this.userFavoriteTrainsService.findAll(user.id);
   }
 
@@ -43,7 +44,8 @@ export class UserFavoriteTrainController {
   @HttpCode(HttpStatus.OK)
   async deleteById(
     @GetUser() user: ApiJwtPayload,
-    @Param('trainId') trainId: string): Promise<UserFavoriteRouteResponse> {
+    @Param('trainId') trainId: string,
+  ): Promise<UserFavoriteRouteResponse> {
     return await this.userFavoriteTrainsService.deleteById(user.id, trainId);
   }
 }

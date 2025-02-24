@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard, RolesGuard } from '@modules/auth/guards';
-import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
 import { getConfig } from '@app/config';
 
 // Modules
+import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import {
   RepositoryModule,
   UsersModule,
@@ -13,8 +15,9 @@ import {
   StationsModule,
   RoutesStationsModule,
   TrainsModule,
+  UserFavoriteTrainsModule,
+  TaskScheduleModule,
 } from '@app/modules';
-import { UserFavoriteTrainsModule } from "src/modules/user-favoriteTrain";
 
 @Module({
   imports: [
@@ -22,6 +25,8 @@ import { UserFavoriteTrainsModule } from "src/modules/user-favoriteTrain";
       isGlobal: true,
       load: [getConfig],
     }),
+    ScheduleModule.forRoot(),
+    TaskScheduleModule,
     RepositoryModule,
     AuthModule,
     UsersModule,
@@ -35,5 +40,6 @@ import { UserFavoriteTrainsModule } from "src/modules/user-favoriteTrain";
     { provide: APP_GUARD, useClass: JwtGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

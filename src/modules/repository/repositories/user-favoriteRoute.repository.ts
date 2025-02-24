@@ -1,13 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { userFavoriteTrains, Prisma } from '@prisma/client';
+import { CreateUserFavoriteDto } from '@modules/user-favoriteTrain';
 
 @Injectable()
 export class UserFavoriteRouteRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: any): Promise<userFavoriteTrains> {
-    return this.prisma.userFavoriteTrains.create({ data });
+  async create(userId: string, data: CreateUserFavoriteDto): Promise<userFavoriteTrains> {
+    return this.prisma.userFavoriteTrains.create({
+      data: {
+        userId,
+        trainId: data.trainId,
+      },
+    });
   }
 
   async findAll(query?: Prisma.userFavoriteTrainsFindManyArgs): Promise<userFavoriteTrains[]> {
@@ -21,7 +27,7 @@ export class UserFavoriteRouteRepository {
                 stations: {
                   include: {
                     Station: true,
-                  }
+                  },
                 },
               },
             },
@@ -30,7 +36,6 @@ export class UserFavoriteRouteRepository {
       },
     });
   }
-
 
   async findOne(query: Prisma.userFavoriteTrainsFindFirstArgs): Promise<userFavoriteTrains> {
     return this.prisma.userFavoriteTrains.findFirst(query);

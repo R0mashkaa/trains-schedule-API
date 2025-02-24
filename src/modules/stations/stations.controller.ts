@@ -1,18 +1,18 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoggerApi, Roles, Public} from '@app/common';
+import { LoggerApi, Roles, Public } from '@app/common';
 import { UsersRoleEnum } from '@prisma/client';
 import { UpdateStationDto, StationsResponse, CreateStationDto } from './dto';
 import { StationsService } from './stations.service';
 
 @LoggerApi()
-@ApiBearerAuth()
 @ApiTags('stations')
 @Controller('stations')
 export class StationsController {
   constructor(private readonly stationsService: StationsService) {}
 
   @Post()
+  @ApiBearerAuth()
   @Roles(UsersRoleEnum.ADMIN, UsersRoleEnum.SUPER_ADMIN)
   @ApiOperation({
     summary: '[CreateStation]',
@@ -24,8 +24,8 @@ export class StationsController {
     return await this.stationsService.create(data);
   }
 
-  @Public()
   @Get()
+  @Public()
   @ApiOperation({
     summary: '[GetAllStations]',
     description: 'Get all stations',
@@ -37,6 +37,7 @@ export class StationsController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   @Roles(UsersRoleEnum.ADMIN, UsersRoleEnum.SUPER_ADMIN)
   @ApiOperation({
     summary: '[GetStationById]',
@@ -49,6 +50,7 @@ export class StationsController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
   @Roles(UsersRoleEnum.ADMIN, UsersRoleEnum.SUPER_ADMIN)
   @ApiOperation({
     summary: '[UpdateStationById]',
@@ -61,6 +63,7 @@ export class StationsController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   @Roles(UsersRoleEnum.SUPER_ADMIN)
   @ApiOperation({
     summary: '[DeleteStation]',

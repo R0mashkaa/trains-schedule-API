@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { errorHandler, LoggerServiceDecorator } from '@app/common';
-import { TrainsRepository, UserFavoriteRouteRepository } from '@repositoryModule';
+import { UserFavoriteRouteRepository } from '@repositoryModule';
 import { CreateUserFavoriteDto, UserFavoriteRouteResponse } from './dto';
 
 @Injectable()
@@ -8,9 +8,9 @@ export class UserFavoriteTrainsService {
   constructor(private userFavoriteRouteRepository: UserFavoriteRouteRepository) {}
 
   @LoggerServiceDecorator()
-  async create(userId, data: CreateUserFavoriteDto): Promise<UserFavoriteRouteResponse> {
+  async create(userId: string, data: CreateUserFavoriteDto): Promise<UserFavoriteRouteResponse> {
     try {
-      return await this.userFavoriteRouteRepository.create({ userId, ...data });
+      return await this.userFavoriteRouteRepository.create(userId, data);
     } catch (error) {
       await errorHandler('create', 'UserFavorite', error);
     }
